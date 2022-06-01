@@ -8,9 +8,14 @@ contract GalaxyBrain is ERC1155, Ownable {
     event Created(uint256 id, string uri, uint256 expiry);
     event Mint(uint256 id, uint256 expiry);
 
+    struct Token {
+        uint256 commit;
+        string metadata;
+        uint256 expiry;
+    }
+
     //  tokenID to ipfs metadata
-    mapping(uint256 => string) public metadata;
-    mapping(uint256 => uint256) public expiry;
+    mapping(uint256 => Token) public tokens;
     uint256 totalSupply = 0;
 
     // Create token
@@ -18,12 +23,9 @@ contract GalaxyBrain is ERC1155, Ownable {
         external
         onlyOwner
     {
-        uint256 id = totalSupply;
-        unchecked {
-            ++totalSupply;
-        }
-        metadata[id] = ipfsHash;
-        expiry[id] = expiryTime;
+        uint256 id = totalSupply++;
+        tokens[id].metadata = ipfsHash;
+        tokens[id].expiry = expiryTime;
         emit Created(id, ipfsHash, expiryTime);
     }
 
@@ -32,13 +34,13 @@ contract GalaxyBrain is ERC1155, Ownable {
     }
 
     function mint(address to, uint256 id) public {
-        // emit Mint(id, block.timestamp);
+        emit Mint(id, block.timestamp);
         require(id <= totalSupply, "token doesn't exist yet");
-        require(block.timestamp <= expiry[id], "mint is over");
+        require(block.timestamp <= tokens[id].expiry, "mint is over");
         _mint(to, id, 1, "");
     }
 
     function uri(uint256 id) public view override returns (string memory) {
-        return metadata[id];
+        return tokens[id].metadata;
     }
 }
