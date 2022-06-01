@@ -10,8 +10,13 @@ contract ContractTest is DSTest {
     function setUp() public {}
 
     function testMint() public {
-        c.create("ipfsHash", 100);
-        c.mint(1);
+        c.hash("testing");
+        c.create(
+            "ipfsHash",
+            0x5f16f4c7f149ac4f9510d9cf8cf384038ad348b3bcdc01915f95de12df9d1b02,
+            100
+        );
+        c.mint(0, "testing");
         assert(
             keccak256(abi.encodePacked(c.uri(0))) ==
                 keccak256(abi.encodePacked("ipfsHash"))

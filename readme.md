@@ -1,0 +1,2 @@
+1. create a token and commit a secret and expiry
+2. anyone can mint for free, so long as they provide the secret within the expiry period //ultimately this is not secure, the secret should be signed by a server instead
